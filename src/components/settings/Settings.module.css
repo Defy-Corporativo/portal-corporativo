@@ -1,0 +1,668 @@
+.settingsButton {
+    position: fixed;
+    bottom: calc(var(--spacing-lg) + var(--safe-area-bottom));
+    right: var(--spacing-lg);
+    width: 48px;
+    height: 48px;
+    border-radius: 50%;
+    background-color: var(--bg-secondary);
+    border: 1px solid var(--border-color);
+    box-shadow: var(--shadow-lg);
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: var(--text-secondary);
+    transition: all var(--transition-base);
+    z-index: 100;
+}
+
+.settingsButton:hover {
+    background-color: var(--color-primary);
+    color: white;
+    border-color: var(--color-primary);
+    transform: rotate(45deg);
+}
+
+.settingsButton:active {
+    transform: rotate(45deg) scale(0.95);
+}
+
+/* Modal Styles */
+.modalOverlay {
+    position: fixed;
+    inset: 0;
+    background-color: rgba(0, 0, 0, 0.5);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 1000;
+    padding: var(--spacing-md);
+    overflow-y: auto;
+}
+
+.modalContent {
+    background-color: var(--bg-secondary);
+    border-radius: var(--border-radius-lg);
+    width: 100%;
+    max-width: 600px;
+    max-height: 90vh;
+    overflow-y: auto;
+    box-shadow: var(--shadow-xl);
+}
+
+.modalHeader {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: var(--spacing-lg);
+    border-bottom: 1px solid var(--border-color);
+    position: sticky;
+    top: 0;
+    background-color: var(--bg-secondary);
+    z-index: 10;
+}
+
+.modalTitle {
+    font-size: var(--font-size-xl);
+    font-weight: 600;
+    color: var(--text-primary);
+    margin: 0;
+}
+
+.closeButton {
+    background: none;
+    border: none;
+    padding: var(--spacing-sm);
+    cursor: pointer;
+    color: var(--text-secondary);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: var(--border-radius-sm);
+    transition: all var(--transition-base);
+}
+
+.closeButton:hover {
+    background-color: var(--bg-hover);
+    color: var(--text-primary);
+}
+
+.modalBody {
+    padding: var(--spacing-lg);
+}
+
+/* Portal List Styles */
+.portalList {
+    display: flex;
+    flex-direction: column;
+    gap: var(--spacing-sm);
+    margin-bottom: var(--spacing-lg);
+}
+
+.portalListItem {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: var(--spacing-md);
+    background-color: var(--bg-main);
+    border-radius: var(--border-radius-sm);
+    border: 1px solid var(--border-color-light);
+}
+
+.portalListItemInfo {
+    display: flex;
+    align-items: center;
+    gap: var(--spacing-md);
+    flex: 1;
+    min-width: 0;
+}
+
+.portalListItemIcon {
+    width: 32px;
+    height: 32px;
+    color: var(--color-primary);
+    flex-shrink: 0;
+}
+
+.portalListItemDetails {
+    flex: 1;
+    min-width: 0;
+}
+
+.portalListItemName {
+    font-weight: 500;
+    color: var(--text-primary);
+    margin: 0 0 2px 0;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.portalListItemUrl {
+    font-size: var(--font-size-sm);
+    color: var(--text-tertiary);
+    margin: 0;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.portalListItemActions {
+    display: flex;
+    gap: var(--spacing-xs);
+    flex-shrink: 0;
+}
+
+.iconButton {
+    background: none;
+    border: none;
+    padding: var(--spacing-sm);
+    cursor: pointer;
+    color: var(--text-secondary);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: var(--border-radius-sm);
+    transition: all var(--transition-base);
+}
+
+.iconButton:hover {
+    background-color: var(--bg-hover);
+}
+
+.iconButton.edit:hover {
+    color: var(--color-primary);
+}
+
+.iconButton.delete:hover {
+    color: var(--color-danger);
+}
+
+/* Form Styles */
+.formSection {
+    border-top: 1px solid var(--border-color);
+    padding-top: var(--spacing-lg);
+}
+
+.formTitle {
+    font-size: var(--font-size-lg);
+    font-weight: 600;
+    color: var(--text-primary);
+    margin: 0 0 var(--spacing-md) 0;
+}
+
+.formGroup {
+    margin-bottom: var(--spacing-md);
+}
+
+.formLabel {
+    display: block;
+    font-size: var(--font-size-sm);
+    font-weight: 500;
+    color: var(--text-secondary);
+    margin-bottom: var(--spacing-xs);
+}
+
+.formInput {
+    width: 100%;
+    padding: var(--spacing-sm) var(--spacing-md);
+    border: 1px solid var(--border-color);
+    border-radius: var(--border-radius-sm);
+    font-size: var(--font-size-md);
+    color: var(--text-primary);
+    background-color: var(--bg-input);
+    transition: all var(--transition-base);
+}
+
+.formInput:focus {
+    outline: none;
+    border-color: var(--color-primary);
+    box-shadow: 0 0 0 3px var(--color-primary-light);
+}
+
+.formInput::placeholder {
+    color: var(--text-tertiary);
+}
+
+.formHint {
+    font-size: var(--font-size-xs);
+    color: var(--text-tertiary);
+    margin-top: var(--spacing-xs);
+}
+
+.charCount {
+    font-size: var(--font-size-xs);
+    color: var(--text-tertiary);
+    text-align: right;
+    margin-top: 2px;
+}
+
+.charCount.warning {
+    color: var(--color-warning);
+}
+
+.charCount.error {
+    color: var(--color-danger);
+}
+
+/* Icon Selector */
+.iconSelector {
+    display: grid;
+    grid-template-columns: repeat(8, 1fr);
+    gap: var(--spacing-xs);
+    max-height: 150px;
+    overflow-y: auto;
+    padding: var(--spacing-sm);
+    border: 1px solid var(--border-color);
+    border-radius: var(--border-radius-sm);
+    background-color: var(--bg-main);
+}
+
+.iconOption {
+    width: 36px;
+    height: 36px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border: 1px solid transparent;
+    border-radius: var(--border-radius-sm);
+    cursor: pointer;
+    color: var(--text-secondary);
+    transition: all var(--transition-base);
+    background: none;
+}
+
+.iconOption:hover {
+    background-color: var(--bg-hover);
+    color: var(--text-primary);
+}
+
+.iconOption.selected {
+    background-color: var(--color-primary-light);
+    border-color: var(--color-primary);
+    color: var(--color-primary);
+}
+
+/* Category Selector */
+.categorySelector {
+    display: flex;
+    gap: var(--spacing-sm);
+}
+
+.categoryOption {
+    flex: 1;
+    padding: var(--spacing-sm) var(--spacing-md);
+    border: 1px solid var(--border-color);
+    border-radius: var(--border-radius-sm);
+    background-color: var(--bg-main);
+    color: var(--text-secondary);
+    font-size: var(--font-size-sm);
+    cursor: pointer;
+    transition: all var(--transition-base);
+    text-align: center;
+}
+
+.categoryOption:hover {
+    background-color: var(--bg-hover);
+    color: var(--text-primary);
+}
+
+.categoryOption.selected {
+    background-color: var(--color-primary);
+    border-color: var(--color-primary);
+    color: white;
+}
+
+/* Form Actions */
+.formActions {
+    display: flex;
+    gap: var(--spacing-sm);
+    margin-top: var(--spacing-lg);
+}
+
+.submitButton {
+    flex: 1;
+    padding: var(--spacing-sm) var(--spacing-lg);
+    background-color: var(--color-primary);
+    color: white;
+    border: none;
+    border-radius: var(--border-radius-sm);
+    font-size: var(--font-size-md);
+    font-weight: 500;
+    cursor: pointer;
+    transition: all var(--transition-base);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: var(--spacing-sm);
+}
+
+.submitButton:hover {
+    background-color: var(--color-primary-hover);
+}
+
+.submitButton:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+}
+
+.cancelButton {
+    padding: var(--spacing-sm) var(--spacing-lg);
+    background-color: transparent;
+    color: var(--text-secondary);
+    border: 1px solid var(--border-color);
+    border-radius: var(--border-radius-sm);
+    font-size: var(--font-size-md);
+    cursor: pointer;
+    transition: all var(--transition-base);
+}
+
+.cancelButton:hover {
+    background-color: var(--bg-hover);
+    color: var(--text-primary);
+}
+
+/* Empty State */
+.emptyList {
+    text-align: center;
+    padding: var(--spacing-xl);
+    color: var(--text-secondary);
+    background-color: var(--bg-main);
+    border-radius: var(--border-radius-sm);
+    border: 1px dashed var(--border-color);
+}
+
+@media (max-width: 768px) {
+    .settingsButton {
+        bottom: calc(var(--spacing-md) + var(--safe-area-bottom));
+        right: var(--spacing-md);
+    }
+
+    .modalOverlay {
+        padding: 0;
+        align-items: flex-end;
+    }
+
+    .modalContent {
+        max-height: 85vh;
+        border-radius: var(--border-radius-lg) var(--border-radius-lg) 0 0;
+    }
+
+    .modalHeader {
+        padding: var(--spacing-md);
+    }
+
+    .modalBody {
+        padding: var(--spacing-md);
+    }
+
+    .iconSelector {
+        grid-template-columns: repeat(6, 1fr);
+    }
+
+    .formActions {
+        flex-direction: column;
+    }
+
+    .cancelButton {
+        order: 1;
+    }
+
+    .submitButton {
+        order: 0;
+    }
+
+    .formRow {
+        flex-direction: column;
+    }
+
+    .searchContainer {
+        width: 100%;
+        margin-top: var(--spacing-sm);
+    }
+
+    .portalListHeader {
+        flex-direction: column;
+        align-items: flex-start;
+    }
+}
+
+/* Add New Portal Button */
+.addNewPortalButton {
+    width: 100%;
+    padding: var(--spacing-md);
+    background-color: var(--bg-main);
+    border: 2px dashed var(--color-primary);
+    border-radius: var(--border-radius-sm);
+    color: var(--color-primary);
+    font-size: var(--font-size-md);
+    font-weight: 500;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: var(--spacing-sm);
+    transition: all var(--transition-base);
+    margin-bottom: var(--spacing-md);
+}
+
+.addNewPortalButton:hover {
+    background-color: var(--color-primary-light);
+    border-style: solid;
+}
+
+/* Form Header with minimize */
+.formHeader {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: var(--spacing-md);
+}
+
+.minimizeButton {
+    background: none;
+    border: none;
+    padding: var(--spacing-xs);
+    cursor: pointer;
+    color: var(--text-secondary);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: var(--border-radius-sm);
+    transition: all var(--transition-base);
+}
+
+.minimizeButton:hover {
+    background-color: var(--bg-hover);
+    color: var(--text-primary);
+}
+
+/* Form Row for side-by-side inputs */
+.formRow {
+    display: flex;
+    gap: var(--spacing-md);
+}
+
+.formRow .formGroup {
+    flex: 1;
+}
+
+/* Portal List Section */
+.portalListSection {
+    margin-top: var(--spacing-lg);
+    border-top: 1px solid var(--border-color);
+    padding-top: var(--spacing-lg);
+}
+
+.portalListHeader {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: var(--spacing-md);
+    gap: var(--spacing-md);
+}
+
+.portalListTitle {
+    font-size: var(--font-size-md);
+    font-weight: 600;
+    color: var(--text-primary);
+    margin: 0;
+}
+
+/* Search Container */
+.searchContainer {
+    position: relative;
+    min-width: 200px;
+}
+
+.searchIcon {
+    position: absolute;
+    left: var(--spacing-sm);
+    top: 50%;
+    transform: translateY(-50%);
+    color: var(--text-tertiary);
+    pointer-events: none;
+}
+
+.searchInput {
+    width: 100%;
+    padding: var(--spacing-xs) var(--spacing-sm) var(--spacing-xs) calc(var(--spacing-sm) + 24px);
+    border: 1px solid var(--border-color);
+    border-radius: var(--border-radius-sm);
+    font-size: var(--font-size-sm);
+    color: var(--text-primary);
+    background-color: var(--bg-input);
+    transition: all var(--transition-base);
+}
+
+.searchInput:focus {
+    outline: none;
+    border-color: var(--color-primary);
+    box-shadow: 0 0 0 2px var(--color-primary-light);
+}
+
+.searchInput::placeholder {
+    color: var(--text-tertiary);
+}
+
+/* Scrollable Portal List */
+.portalListScrollable {
+    max-height: 300px;
+    overflow-y: auto;
+    display: flex;
+    flex-direction: column;
+    gap: var(--spacing-sm);
+    padding-right: var(--spacing-xs);
+}
+
+.portalListScrollable::-webkit-scrollbar {
+    width: 6px;
+}
+
+.portalListScrollable::-webkit-scrollbar-track {
+    background: var(--bg-main);
+    border-radius: 3px;
+}
+
+.portalListScrollable::-webkit-scrollbar-thumb {
+    background: var(--border-color);
+    border-radius: 3px;
+}
+
+.portalListScrollable::-webkit-scrollbar-thumb:hover {
+    background: var(--text-tertiary);
+}
+
+/* Empty search result */
+.emptySearchResult {
+    text-align: center;
+    padding: var(--spacing-lg);
+    color: var(--text-secondary);
+    font-size: var(--font-size-sm);
+}
+
+/* Delete Confirmation Modal */
+.confirmOverlay {
+    position: absolute;
+    inset: 0;
+    background-color: rgba(0, 0, 0, 0.6);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 100;
+    border-radius: var(--border-radius-lg);
+}
+
+.confirmModal {
+    background-color: var(--bg-secondary);
+    border-radius: var(--border-radius-lg);
+    padding: var(--spacing-xl);
+    max-width: 360px;
+    width: 90%;
+    text-align: center;
+    box-shadow: var(--shadow-xl);
+}
+
+.confirmIcon {
+    color: var(--color-danger);
+    margin-bottom: var(--spacing-md);
+}
+
+.confirmTitle {
+    font-size: var(--font-size-lg);
+    font-weight: 600;
+    color: var(--text-primary);
+    margin: 0 0 var(--spacing-sm) 0;
+}
+
+.confirmMessage {
+    font-size: var(--font-size-md);
+    color: var(--text-secondary);
+    margin: 0 0 var(--spacing-lg) 0;
+    line-height: 1.5;
+}
+
+.confirmMessage strong {
+    color: var(--text-primary);
+}
+
+.confirmActions {
+    display: flex;
+    gap: var(--spacing-sm);
+    justify-content: center;
+}
+
+.confirmCancelButton {
+    padding: var(--spacing-sm) var(--spacing-lg);
+    background-color: var(--bg-main);
+    color: var(--text-secondary);
+    border: 1px solid var(--border-color);
+    border-radius: var(--border-radius-sm);
+    font-size: var(--font-size-md);
+    cursor: pointer;
+    transition: all var(--transition-base);
+}
+
+.confirmCancelButton:hover {
+    background-color: var(--bg-hover);
+    color: var(--text-primary);
+}
+
+.confirmDeleteButton {
+    padding: var(--spacing-sm) var(--spacing-lg);
+    background-color: var(--color-danger);
+    color: white;
+    border: none;
+    border-radius: var(--border-radius-sm);
+    font-size: var(--font-size-md);
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    gap: var(--spacing-xs);
+    transition: all var(--transition-base);
+}
+
+.confirmDeleteButton:hover {
+    opacity: 0.9;
+}
