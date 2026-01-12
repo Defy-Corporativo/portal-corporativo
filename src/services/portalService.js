@@ -128,3 +128,58 @@ export const reorderPortals = async (orderedIds) => {
 
     return true;
 };
+
+/**
+ * Upload de ícone personalizado para o storage
+ * @param {File} file - Arquivo de imagem
+ * @returns {string} URL pública da imagem
+ */
+export const uploadPortalIcon = async (file) => {
+    const fileExt = file.name.split('.').pop();
+    const fileName = `${Date.now()}-${Math.random().toString(36).substring(2, 8)}.${fileExt}`;
+    const filePath = `icons/${fileName}`;
+
+    const { error: uploadError } = await supabase.storage
+        .from('portal-icons')
+        .upload(filePath, file, {
+            cacheControl: '3600',
+            upsert: false,
+        });
+
+    if (uploadError) {
+        console.error('Error uploading portal icon:', uploadError);
+        throw uploadError;
+    }
+
+    const { data: { publicUrl } } = supabase.storage
+        .from('portal-icons')
+        .getPublicUrl(filePath);
+
+    return publicUrl;
+};
+
+/**
+ * Deletar ícone personalizado do storage
+ * @param {string} url - URL pública da imagem
+ */
+export const deletePortalIcon = async (url) => {
+    if (!url) return;
+
+    try {
+        // Extrair o path do arquivo da URL
+        const urlParts = url.split('/portal-icons/');
+        if (urlParts.length < 2) return;
+
+        const filePath = urlParts[1];
+
+        const { error } = await supabase.storage
+            .from('portal-icons')
+            .remove([filePath]);
+
+        if (error) {
+            console.error('Error deleting portal icon:', error);
+        }
+    } catch (error) {
+        console.error('Error parsing icon URL:', error);
+    }
+};

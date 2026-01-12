@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useRef } from 'react';
-import { X, Plus, Pencil, Trash2, Save, Search, ChevronUp, AlertTriangle } from 'lucide-react';
+import { X, Plus, Pencil, Trash2, Save, Search, ChevronUp, AlertTriangle, Upload, Image } from 'lucide-react';
 import * as LucideIcons from 'lucide-react';
-import { getAllPortals, createPortal, updatePortal, deletePortal } from '../../services/portalService';
+import { getAllPortals, createPortal, updatePortal, deletePortal, uploadPortalIcon, deletePortalIcon } from '../../services/portalService';
 import styles from './Settings.module.css';
 
 // Available icons for selection
@@ -33,7 +33,13 @@ const PortalSettingsModal = ({ isOpen, onClose }) => {
         description: '',
         icon: 'Globe',
         category: 'internal',
+        iconType: 'preset', // 'preset' or 'custom'
+        customIconFile: null,
+        customIconUrl: null,
     });
+    const [imagePreview, setImagePreview] = useState(null);
+    const [uploading, setUploading] = useState(false);
+    const fileInputRef = useRef(null);
 
     useEffect(() => {
         if (isOpen) {
@@ -62,8 +68,15 @@ const PortalSettingsModal = ({ isOpen, onClose }) => {
             description: '',
             icon: 'Globe',
             category: 'internal',
+            iconType: 'preset',
+            customIconFile: null,
+            customIconUrl: null,
         });
+        setImagePreview(null);
         setEditingPortal(null);
+        if (fileInputRef.current) {
+            fileInputRef.current.value = '';
+        }
     };
 
     const hideForm = () => {
@@ -83,13 +96,18 @@ const PortalSettingsModal = ({ isOpen, onClose }) => {
 
     const handleEdit = (portal) => {
         setEditingPortal(portal);
+        const hasCustomIcon = !!portal.custom_icon_url;
         setFormData({
             name: portal.name,
             url: portal.url,
             description: portal.description,
             icon: portal.icon || 'Globe',
             category: portal.category || 'internal',
+            iconType: hasCustomIcon ? 'custom' : 'preset',
+            customIconFile: null,
+            customIconUrl: portal.custom_icon_url || null,
         });
+        setImagePreview(portal.custom_icon_url || null);
         setShowForm(true);
         setTimeout(() => {
             formRef.current?.scrollIntoView({ behavior: 'smooth', block: 'start' });
@@ -126,11 +144,44 @@ const PortalSettingsModal = ({ isOpen, onClose }) => {
             return;
         }
 
+        // Validate custom icon
+        if (formData.iconType === 'custom' && !formData.customIconFile && !formData.customIconUrl) {
+            alert('Por favor, faça upload de uma imagem para o ícone personalizado.');
+            return;
+        }
+
         try {
+            setUploading(true);
+            let customIconUrl = formData.customIconUrl;
+
+            // Handle image upload
+            if (formData.iconType === 'custom' && formData.customIconFile) {
+                // Delete old image if editing and there was a previous custom icon
+                if (editingPortal?.custom_icon_url && editingPortal.custom_icon_url !== formData.customIconUrl) {
+                    await deletePortalIcon(editingPortal.custom_icon_url);
+                }
+                customIconUrl = await uploadPortalIcon(formData.customIconFile);
+            } else if (formData.iconType === 'preset' && editingPortal?.custom_icon_url) {
+                // Switching from custom to preset, delete old image
+                await deletePortalIcon(editingPortal.custom_icon_url);
+                customIconUrl = null;
+            } else if (formData.iconType === 'preset') {
+                customIconUrl = null;
+            }
+
+            const portalData = {
+                name: formData.name,
+                url: formData.url,
+                description: formData.description,
+                icon: formData.icon,
+                category: formData.category,
+                custom_icon_url: customIconUrl,
+            };
+
             if (editingPortal) {
-                await updatePortal(editingPortal.id, formData);
+                await updatePortal(editingPortal.id, portalData);
             } else {
-                await createPortal(formData);
+                await createPortal(portalData);
             }
             await loadPortals();
             // Keep form visible for adding more portals, just reset fields
@@ -138,6 +189,8 @@ const PortalSettingsModal = ({ isOpen, onClose }) => {
         } catch (error) {
             console.error('Error saving portal:', error);
             alert('Erro ao salvar portal.');
+        } finally {
+            setUploading(false);
         }
     };
 
@@ -146,6 +199,40 @@ const PortalSettingsModal = ({ isOpen, onClose }) => {
             return;
         }
         setFormData(prev => ({ ...prev, [field]: value }));
+    };
+
+    const handleFileChange = (e) => {
+        const file = e.target.files?.[0];
+        if (!file) return;
+
+        // Validate file type
+        if (!file.type.startsWith('image/')) {
+            alert('Por favor, selecione apenas arquivos de imagem.');
+            return;
+        }
+
+        // Validate file size (max 2MB)
+        if (file.size > 2 * 1024 * 1024) {
+            alert('A imagem deve ter no máximo 2MB.');
+            return;
+        }
+
+        setFormData(prev => ({ ...prev, customIconFile: file }));
+
+        // Create preview
+        const reader = new FileReader();
+        reader.onloadend = () => {
+            setImagePreview(reader.result);
+        };
+        reader.readAsDataURL(file);
+    };
+
+    const handleRemoveImage = () => {
+        setFormData(prev => ({ ...prev, customIconFile: null, customIconUrl: null }));
+        setImagePreview(null);
+        if (fileInputRef.current) {
+            fileInputRef.current.value = '';
+        }
     };
 
     const getIconComponent = (iconName) => {
@@ -248,19 +335,21 @@ const PortalSettingsModal = ({ isOpen, onClose }) => {
 
                                 <div className={styles.formGroup}>
                                     <label className={styles.formLabel}>Categoria *</label>
-                                    <div className={styles.categorySelector}>
+                                    <div className={styles.iconTypeTabs}>
                                         <button
                                             type="button"
-                                            className={`${styles.categoryOption} ${formData.category === 'internal' ? styles.selected : ''}`}
+                                            className={`${styles.iconTypeTab} ${formData.category === 'internal' ? styles.active : ''}`}
                                             onClick={() => handleInputChange('category', 'internal')}
                                         >
+                                            <LucideIcons.Building2 size={16} />
                                             Soluções Internas
                                         </button>
                                         <button
                                             type="button"
-                                            className={`${styles.categoryOption} ${formData.category === 'external' ? styles.selected : ''}`}
+                                            className={`${styles.iconTypeTab} ${formData.category === 'external' ? styles.active : ''}`}
                                             onClick={() => handleInputChange('category', 'external')}
                                         >
+                                            <LucideIcons.Globe size={16} />
                                             Soluções Externas
                                         </button>
                                     </div>
@@ -268,26 +357,99 @@ const PortalSettingsModal = ({ isOpen, onClose }) => {
 
                                 <div className={styles.formGroup}>
                                     <label className={styles.formLabel}>Ícone</label>
-                                    <div className={styles.iconSelector}>
-                                        {AVAILABLE_ICONS.map((iconName) => {
-                                            const IconComponent = LucideIcons[iconName];
-                                            if (!IconComponent) return null;
-                                            return (
-                                                <button
-                                                    key={iconName}
-                                                    type="button"
-                                                    className={`${styles.iconOption} ${formData.icon === iconName ? styles.selected : ''}`}
-                                                    onClick={() => handleInputChange('icon', iconName)}
-                                                    title={iconName}
-                                                >
-                                                    <IconComponent size={20} />
-                                                </button>
-                                            );
-                                        })}
+
+                                    {/* Icon Type Tabs */}
+                                    <div className={styles.iconTypeTabs}>
+                                        <button
+                                            type="button"
+                                            className={`${styles.iconTypeTab} ${formData.iconType === 'preset' ? styles.active : ''}`}
+                                            onClick={() => handleInputChange('iconType', 'preset')}
+                                        >
+                                            <LucideIcons.Grid3X3 size={16} />
+                                            Ícones
+                                        </button>
+                                        <button
+                                            type="button"
+                                            className={`${styles.iconTypeTab} ${formData.iconType === 'custom' ? styles.active : ''}`}
+                                            onClick={() => handleInputChange('iconType', 'custom')}
+                                        >
+                                            <Image size={16} />
+                                            Imagem
+                                        </button>
                                     </div>
-                                    <p className={styles.formHint}>
-                                        Ícone selecionado: {formData.icon}
-                                    </p>
+
+                                    {/* Preset Icons Grid */}
+                                    {formData.iconType === 'preset' && (
+                                        <>
+                                            <div className={styles.iconSelector}>
+                                                {AVAILABLE_ICONS.map((iconName) => {
+                                                    const IconComponent = LucideIcons[iconName];
+                                                    if (!IconComponent) return null;
+                                                    return (
+                                                        <button
+                                                            key={iconName}
+                                                            type="button"
+                                                            className={`${styles.iconOption} ${formData.icon === iconName ? styles.selected : ''}`}
+                                                            onClick={() => handleInputChange('icon', iconName)}
+                                                            title={iconName}
+                                                        >
+                                                            <IconComponent size={20} />
+                                                        </button>
+                                                    );
+                                                })}
+                                            </div>
+                                            <p className={styles.formHint}>
+                                                Ícone selecionado: {formData.icon}
+                                            </p>
+                                        </>
+                                    )}
+
+                                    {/* Custom Image Upload */}
+                                    {formData.iconType === 'custom' && (
+                                        <div className={styles.imageUploadSection}>
+                                            {imagePreview ? (
+                                                <div className={styles.imagePreviewWrapper}>
+                                                    {/* Preview simulando o botão */}
+                                                    <div className={styles.buttonPreview}>
+                                                        <div className={styles.buttonPreviewImage}>
+                                                            <img
+                                                                src={imagePreview}
+                                                                alt="Preview"
+                                                            />
+                                                        </div>
+                                                        <span className={styles.buttonPreviewLabel}>Nome do Portal</span>
+                                                    </div>
+                                                    <div className={styles.previewActions}>
+                                                        <p className={styles.previewHint}>
+                                                            <LucideIcons.Info size={14} />
+                                                            Visualização de como a imagem aparecerá no botão
+                                                        </p>
+                                                        <button
+                                                            type="button"
+                                                            className={styles.changeImageButton}
+                                                            onClick={handleRemoveImage}
+                                                        >
+                                                            <LucideIcons.RefreshCw size={14} />
+                                                            Trocar imagem
+                                                        </button>
+                                                    </div>
+                                                </div>
+                                            ) : (
+                                                <label className={styles.uploadArea}>
+                                                    <input
+                                                        ref={fileInputRef}
+                                                        type="file"
+                                                        accept="image/*"
+                                                        onChange={handleFileChange}
+                                                        className={styles.fileInput}
+                                                    />
+                                                    <Upload size={32} />
+                                                    <span>Clique ou arraste uma imagem</span>
+                                                    <span className={styles.uploadHint}>PNG, JPG ou SVG (máx. 2MB)</span>
+                                                </label>
+                                            )}
+                                        </div>
+                                    )}
                                 </div>
 
                                 <div className={styles.formActions}>
@@ -300,8 +462,13 @@ const PortalSettingsModal = ({ isOpen, onClose }) => {
                                             Cancelar Edição
                                         </button>
                                     )}
-                                    <button type="submit" className={styles.submitButton}>
-                                        {editingPortal ? (
+                                    <button type="submit" className={styles.submitButton} disabled={uploading}>
+                                        {uploading ? (
+                                            <>
+                                                <LucideIcons.Loader2 size={18} className={styles.spinner} />
+                                                Salvando...
+                                            </>
+                                        ) : editingPortal ? (
                                             <>
                                                 <Save size={18} />
                                                 Salvar Alterações
@@ -351,7 +518,15 @@ const PortalSettingsModal = ({ isOpen, onClose }) => {
                                         return (
                                             <div key={portal.id} className={styles.portalListItem}>
                                                 <div className={styles.portalListItemInfo}>
-                                                    <IconComponent className={styles.portalListItemIcon} />
+                                                    {portal.custom_icon_url ? (
+                                                        <img
+                                                            src={portal.custom_icon_url}
+                                                            alt={portal.name}
+                                                            className={styles.portalListItemImage}
+                                                        />
+                                                    ) : (
+                                                        <IconComponent className={styles.portalListItemIcon} />
+                                                    )}
                                                     <div className={styles.portalListItemDetails}>
                                                         <p className={styles.portalListItemName}>{portal.name}</p>
                                                         <p className={styles.portalListItemUrl}>{portal.url}</p>
