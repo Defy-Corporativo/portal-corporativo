@@ -342,7 +342,7 @@ const PortalSettingsModal = ({ isOpen, onClose }) => {
                                             onClick={() => handleInputChange('category', 'internal')}
                                         >
                                             <LucideIcons.Building2 size={16} />
-                                            Soluções Internas
+                                            Soluções fechadas Defy
                                         </button>
                                         <button
                                             type="button"
@@ -350,7 +350,7 @@ const PortalSettingsModal = ({ isOpen, onClose }) => {
                                             onClick={() => handleInputChange('category', 'external')}
                                         >
                                             <LucideIcons.Globe size={16} />
-                                            Soluções Externas
+                                            Soluções abertas ao público
                                         </button>
                                     </div>
                                 </div>

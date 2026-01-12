@@ -130,7 +130,7 @@ const PortalHome = () => {
                         {/* Internal Portals Section */}
                         {internalPortals.length > 0 && (
                             <section className={styles.portalSection}>
-                                <h2 className={styles.sectionTitle}>Soluções Internas</h2>
+                                <h2 className={styles.sectionTitle}>Soluções fechadas Defy</h2>
                                 <div className={styles.portalGrid}>
                                     {internalPortals.map((portal) => (
                                         <PortalButton key={portal.id} portal={portal} />
@@ -142,7 +142,7 @@ const PortalHome = () => {
                         {/* External Portals Section */}
                         {externalPortals.length > 0 && (
                             <section className={styles.portalSection}>
-                                <h2 className={styles.sectionTitle}>Soluções Externas</h2>
+                                <h2 className={styles.sectionTitle}>Soluções abertas ao público</h2>
                                 <div className={styles.portalGrid}>
                                     {externalPortals.map((portal) => (
                                         <PortalButton key={portal.id} portal={portal} />
