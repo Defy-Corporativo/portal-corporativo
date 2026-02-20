@@ -158,6 +158,62 @@ export const uploadPortalIcon = async (file) => {
     return publicUrl;
 };
 
+/* ─────────────────────────────────────────────────────────
+   Ordem dos portais via arquivo JSON no Storage
+   (compartilhada entre todos os usuários — nenhuma coluna
+    de banco de dados adicional é necessária)
+   ───────────────────────────────────────────────────────── */
+
+const ORDER_BUCKET = 'portal-icons';
+const ORDER_FILE   = 'config/portal-order.json';
+
+/**
+ * Salva a ordem dos portais como um arquivo JSON no Storage.
+ * @param {string[]} orderedIds - IDs dos portais na ordem desejada
+ */
+export const savePortalOrder = async (orderedIds) => {
+    const payload = JSON.stringify({
+        order: orderedIds,
+        savedAt: new Date().toISOString(),
+    });
+
+    const blob = new Blob([payload], { type: 'application/json' });
+
+    const { error } = await supabase.storage
+        .from(ORDER_BUCKET)
+        .upload(ORDER_FILE, blob, {
+            contentType: 'application/json',
+            cacheControl: '1',
+            upsert: true,          // sobrescreve o arquivo existente
+        });
+
+    if (error) {
+        console.error('Erro ao salvar ordem dos portais:', error);
+        throw error;
+    }
+
+    return true;
+};
+
+/**
+ * Carrega a ordem salva dos portais do Storage.
+ * Retorna null se o arquivo ainda não existir.
+ */
+export const loadPortalOrder = async () => {
+    try {
+        const { data, error } = await supabase.storage
+            .from(ORDER_BUCKET)
+            .download(ORDER_FILE);
+
+        if (error || !data) return null;
+
+        const text = await data.text();
+        return JSON.parse(text);
+    } catch {
+        return null;   // arquivo inexistente na primeira vez — comportamento normal
+    }
+};
+
 /**
  * Deletar ícone personalizado do storage
  * @param {string} url - URL pública da imagem
