@@ -1,13 +1,15 @@
 import React, { useState, useEffect, useMemo } from 'react';
-import { LogOut, LayoutGrid, Search } from 'lucide-react';
+import { LogOut, Search, LayoutGrid } from 'lucide-react';
 import { useAuth } from '../../contexts/AuthContext';
 import { getPortals } from '../../services/portalService';
 import PortalButton from './PortalButton';
 import SettingsButton from '../settings/SettingsButton';
 import PortalSettingsModal from '../settings/PortalSettingsModal';
-// Logo from public folder
-const defyLogo = '/defy-logo-bh-removebg-preview.png';
 import styles from './Portal.module.css';
+
+const defyLogo = '/logo-defy.png';
+
+const SKELETON_COUNT = 6;
 
 const PortalHome = () => {
     const { user, signOut } = useAuth();
@@ -34,7 +36,7 @@ const PortalHome = () => {
 
     const handleSettingsClose = () => {
         setSettingsOpen(false);
-        loadPortals(); // Reload portals after settings change
+        loadPortals();
     };
 
     const getUserDisplayName = () => {
@@ -45,51 +47,54 @@ const PortalHome = () => {
             'Usuário';
     };
 
-    // Filter portals by search term
     const filteredPortals = useMemo(() => {
         if (!searchTerm.trim()) return portals;
         const term = searchTerm.toLowerCase();
-        return portals.filter(portal =>
-            portal.name.toLowerCase().includes(term) ||
-            portal.description?.toLowerCase().includes(term)
+        return portals.filter(p =>
+            p.name.toLowerCase().includes(term) ||
+            p.description?.toLowerCase().includes(term)
         );
     }, [portals, searchTerm]);
 
-    // Separate portals by category
     const internalPortals = useMemo(() =>
-        filteredPortals.filter(p => p.category === 'internal'),
-        [filteredPortals]
-    );
+        filteredPortals.filter(p => p.category === 'internal'), [filteredPortals]);
 
     const externalPortals = useMemo(() =>
-        filteredPortals.filter(p => p.category === 'external'),
-        [filteredPortals]
-    );
+        filteredPortals.filter(p => p.category === 'external'), [filteredPortals]);
 
     const hasPortals = portals.length > 0;
     const hasFilteredResults = filteredPortals.length > 0;
 
     return (
         <div className={styles.portalContainer}>
-            <div className={styles.portalContent}>
-                <header className={styles.portalHeader}>
-                    <div className={styles.logoContainer}>
-                        <img src={defyLogo} alt="Defy Solutions" />
-                    </div>
-                    <h1 className={styles.portalTitle}>Portal Corporativo</h1>
-                    <p className={styles.portalSubtitle}>
-                        Acesse todos os sistemas e ferramentas da Defy
-                    </p>
-                    <div className={styles.userInfo}>
-                        <span className={styles.userName}>{getUserDisplayName()}</span>
-                        <button className={styles.logoutButton} onClick={signOut}>
-                            <LogOut size={16} />
-                            Sair
-                        </button>
-                    </div>
-                </header>
+            {/* ── Topbar ── */}
+            <header className={styles.topbar}>
+                <div className={styles.topbarLogo}>
+                    <img src={defyLogo} alt="Defy Solutions" />
+                </div>
+                <div className={styles.topbarRight}>
+                    <span className={styles.userName}>{getUserDisplayName()}</span>
+                    <button className={styles.logoutButton} onClick={signOut}>
+                        <LogOut size={14} />
+                        Sair
+                    </button>
+                </div>
+            </header>
 
-                {/* Global Search Box */}
+            {/* ── Conteúdo ── */}
+            <main className={styles.portalContent}>
+                {/* Hero */}
+                <div className={styles.portalHero}>
+                    <h1 className={styles.portalTitle}>
+                        Bem-vindo ao{' '}
+                        <span className={styles.portalTitleAccent}>Portal Corporativo</span>
+                    </h1>
+                    <p className={styles.portalSubtitle}>
+                        Acesse todos os sistemas e soluções da Defy em um só lugar
+                    </p>
+                </div>
+
+                {/* Busca */}
                 {hasPortals && (
                     <div className={styles.searchContainer}>
                         <div className={styles.searchBox}>
@@ -97,17 +102,20 @@ const PortalHome = () => {
                             <input
                                 type="text"
                                 className={styles.searchInput}
-                                placeholder="Pesquisar portais..."
+                                placeholder="Buscar portais e soluções..."
                                 value={searchTerm}
-                                onChange={(e) => setSearchTerm(e.target.value)}
+                                onChange={e => setSearchTerm(e.target.value)}
                             />
                         </div>
                     </div>
                 )}
 
+                {/* Estados */}
                 {loading ? (
-                    <div className={styles.emptyState}>
-                        <p>Carregando portais...</p>
+                    <div className={styles.skeletonGrid}>
+                        {Array.from({ length: SKELETON_COUNT }).map((_, i) => (
+                            <div key={i} className={styles.skeletonCard} />
+                        ))}
                     </div>
                 ) : !hasPortals ? (
                     <div className={styles.emptyState}>
@@ -121,30 +129,38 @@ const PortalHome = () => {
                     <div className={styles.emptyState}>
                         <Search className={styles.emptyStateIcon} />
                         <h3 className={styles.emptyStateTitle}>Nenhum resultado encontrado</h3>
-                        <p className={styles.emptyStateText}>
-                            Tente buscar por outro termo.
-                        </p>
+                        <p className={styles.emptyStateText}>Tente buscar por outro termo.</p>
                     </div>
                 ) : (
                     <div className={styles.portalSections}>
-                        {/* Internal Portals Section */}
                         {internalPortals.length > 0 && (
                             <section className={styles.portalSection}>
-                                <h2 className={styles.sectionTitle}>Soluções fechadas Defy</h2>
+                                <div className={styles.sectionHeader}>
+                                    <h2 className={styles.sectionTitle}>Soluções Defy</h2>
+                                    <div className={styles.sectionLine} />
+                                    <span className={styles.sectionBadge}>
+                                        {internalPortals.length} {internalPortals.length === 1 ? 'sistema' : 'sistemas'}
+                                    </span>
+                                </div>
                                 <div className={styles.portalGrid}>
-                                    {internalPortals.map((portal) => (
+                                    {internalPortals.map(portal => (
                                         <PortalButton key={portal.id} portal={portal} />
                                     ))}
                                 </div>
                             </section>
                         )}
 
-                        {/* External Portals Section */}
                         {externalPortals.length > 0 && (
                             <section className={styles.portalSection}>
-                                <h2 className={styles.sectionTitle}>Soluções abertas ao público</h2>
+                                <div className={styles.sectionHeader}>
+                                    <h2 className={styles.sectionTitle}>Soluções Públicas</h2>
+                                    <div className={styles.sectionLine} />
+                                    <span className={styles.sectionBadge}>
+                                        {externalPortals.length} {externalPortals.length === 1 ? 'sistema' : 'sistemas'}
+                                    </span>
+                                </div>
                                 <div className={styles.portalGrid}>
-                                    {externalPortals.map((portal) => (
+                                    {externalPortals.map(portal => (
                                         <PortalButton key={portal.id} portal={portal} />
                                     ))}
                                 </div>
@@ -152,14 +168,14 @@ const PortalHome = () => {
                         )}
                     </div>
                 )}
+            </main>
 
-                <SettingsButton onClick={() => setSettingsOpen(true)} />
+            <SettingsButton onClick={() => setSettingsOpen(true)} />
 
-                <PortalSettingsModal
-                    isOpen={settingsOpen}
-                    onClose={handleSettingsClose}
-                />
-            </div>
+            <PortalSettingsModal
+                isOpen={settingsOpen}
+                onClose={handleSettingsClose}
+            />
         </div>
     );
 };

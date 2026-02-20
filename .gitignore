@@ -26,3 +26,6 @@ dist-ssr
 # segurança
 .env
 .env.local
+
+# outros
+.claude

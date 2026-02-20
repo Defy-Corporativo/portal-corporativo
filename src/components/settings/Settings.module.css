@@ -1,3 +1,8 @@
+/* ═══════════════════════════════════════════════════════════
+   Settings — Defy Hi-Tech Clean Design
+   ═══════════════════════════════════════════════════════════ */
+
+/* ── Botão Flutuante de Configurações ───────────────────────── */
 .settingsButton {
     position: fixed;
     bottom: calc(var(--spacing-lg) + var(--safe-area-bottom));
@@ -5,69 +10,105 @@
     width: 48px;
     height: 48px;
     border-radius: 50%;
-    background-color: var(--bg-secondary);
-    border: 1px solid var(--border-color);
-    box-shadow: var(--shadow-lg);
+    background: var(--color-navy);
+    border: none;
+    box-shadow: 0 4px 16px rgba(12, 30, 53, 0.3), 0 0 0 0 rgba(0, 196, 180, 0);
     cursor: pointer;
     display: flex;
     align-items: center;
     justify-content: center;
-    color: var(--text-secondary);
-    transition: all var(--transition-base);
+    color: white;
+    transition:
+        transform var(--transition-spring),
+        background-color var(--transition-base),
+        box-shadow var(--transition-base);
     z-index: 100;
 }
 
 .settingsButton:hover {
-    background-color: var(--color-primary);
-    color: white;
-    border-color: var(--color-primary);
-    transform: rotate(45deg);
+    background: var(--color-teal);
+    box-shadow: 0 6px 24px rgba(0, 196, 180, 0.45), 0 2px 8px rgba(12, 30, 53, 0.2);
+    transform: rotate(45deg) scale(1.05);
 }
 
 .settingsButton:active {
-    transform: rotate(45deg) scale(0.95);
+    transform: rotate(45deg) scale(0.97);
 }
 
-/* Modal Styles */
+/* ── Overlay do Modal ───────────────────────────────────────── */
 .modalOverlay {
     position: fixed;
     inset: 0;
-    background-color: rgba(0, 0, 0, 0.5);
+    background: rgba(12, 30, 53, 0.5);
+    backdrop-filter: blur(4px);
+    -webkit-backdrop-filter: blur(4px);
     display: flex;
     align-items: center;
     justify-content: center;
     z-index: 1000;
     padding: var(--spacing-md);
     overflow-y: auto;
+    animation: overlayIn 0.2s ease-out both;
 }
 
+@keyframes overlayIn {
+    from { opacity: 0; }
+    to   { opacity: 1; }
+}
+
+/* ── Conteúdo do Modal ──────────────────────────────────────── */
 .modalContent {
-    background-color: var(--bg-secondary);
-    border-radius: var(--border-radius-lg);
+    background: #FFFFFF;
+    border-radius: var(--border-radius-xl);
     width: 100%;
     max-width: 600px;
     max-height: 90vh;
     overflow-y: auto;
-    box-shadow: var(--shadow-xl);
+    box-shadow:
+        0 4px 6px rgba(12, 30, 53, 0.05),
+        0 20px 60px rgba(12, 30, 53, 0.18);
+    border: 1px solid rgba(0, 196, 180, 0.1);
+    position: relative;
+    animation: modalIn 0.3s cubic-bezier(0.34, 1.56, 0.64, 1) both;
 }
 
+@keyframes modalIn {
+    from { opacity: 0; transform: scale(0.94) translateY(20px); }
+    to   { opacity: 1; transform: scale(1) translateY(0); }
+}
+
+/* Linha teal no topo */
+.modalContent::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 40px;
+    right: 40px;
+    height: 2px;
+    background: linear-gradient(90deg, transparent, var(--color-teal), transparent);
+    border-radius: 0 0 2px 2px;
+}
+
+/* ── Cabeçalho do Modal ─────────────────────────────────────── */
 .modalHeader {
     display: flex;
     align-items: center;
     justify-content: space-between;
-    padding: var(--spacing-lg);
-    border-bottom: 1px solid var(--border-color);
+    padding: var(--spacing-lg) var(--spacing-lg) var(--spacing-md);
+    border-bottom: 1px solid var(--border-color-light);
     position: sticky;
     top: 0;
-    background-color: var(--bg-secondary);
+    background: #FFFFFF;
     z-index: 10;
+    border-radius: var(--border-radius-xl) var(--border-radius-xl) 0 0;
 }
 
 .modalTitle {
-    font-size: var(--font-size-xl);
+    font-size: var(--font-size-lg);
     font-weight: 600;
     color: var(--text-primary);
     margin: 0;
+    letter-spacing: -0.01em;
 }
 
 .closeButton {
@@ -84,15 +125,16 @@
 }
 
 .closeButton:hover {
-    background-color: var(--bg-hover);
+    background: var(--bg-hover);
     color: var(--text-primary);
 }
 
+/* ── Corpo do Modal ─────────────────────────────────────────── */
 .modalBody {
     padding: var(--spacing-lg);
 }
 
-/* Portal List Styles */
+/* ── Lista de Portais ───────────────────────────────────────── */
 .portalList {
     display: flex;
     flex-direction: column;
@@ -105,9 +147,15 @@
     align-items: center;
     justify-content: space-between;
     padding: var(--spacing-md);
-    background-color: var(--bg-main);
+    background: var(--bg-main);
     border-radius: var(--border-radius-sm);
     border: 1px solid var(--border-color-light);
+    transition: border-color var(--transition-base), box-shadow var(--transition-base);
+}
+
+.portalListItem:hover {
+    border-color: rgba(0, 196, 180, 0.25);
+    box-shadow: 0 2px 8px rgba(12, 30, 53, 0.06);
 }
 
 .portalListItemInfo {
@@ -121,7 +169,7 @@
 .portalListItemIcon {
     width: 32px;
     height: 32px;
-    color: var(--color-primary);
+    color: var(--color-teal-dark);
     flex-shrink: 0;
 }
 
@@ -168,18 +216,20 @@
 }
 
 .iconButton:hover {
-    background-color: var(--bg-hover);
+    background: var(--bg-hover);
 }
 
 .iconButton.edit:hover {
-    color: var(--color-primary);
+    color: var(--color-teal-dark);
+    background: rgba(0, 196, 180, 0.08);
 }
 
 .iconButton.delete:hover {
     color: var(--color-danger);
+    background: var(--color-danger-light);
 }
 
-/* Form Styles */
+/* ── Formulário ─────────────────────────────────────────────── */
 .formSection {
     border-top: 1px solid var(--border-color);
     padding-top: var(--spacing-lg);
@@ -190,6 +240,7 @@
     font-weight: 600;
     color: var(--text-primary);
     margin: 0 0 var(--spacing-md) 0;
+    letter-spacing: -0.01em;
 }
 
 .formGroup {
@@ -206,19 +257,22 @@
 
 .formInput {
     width: 100%;
-    padding: var(--spacing-sm) var(--spacing-md);
-    border: 1px solid var(--border-color);
+    padding: 10px var(--spacing-md);
+    border: 1.5px solid var(--border-color);
     border-radius: var(--border-radius-sm);
     font-size: var(--font-size-md);
+    font-family: var(--font-family);
     color: var(--text-primary);
-    background-color: var(--bg-input);
-    transition: all var(--transition-base);
+    background: var(--bg-input);
+    transition:
+        border-color var(--transition-base),
+        box-shadow var(--transition-base);
 }
 
 .formInput:focus {
     outline: none;
-    border-color: var(--color-primary);
-    box-shadow: 0 0 0 3px var(--color-primary-light);
+    border-color: var(--color-teal);
+    box-shadow: 0 0 0 3px rgba(0, 196, 180, 0.12);
 }
 
 .formInput::placeholder {
@@ -238,15 +292,10 @@
     margin-top: 2px;
 }
 
-.charCount.warning {
-    color: var(--color-warning);
-}
+.charCount.warning { color: var(--color-warning); }
+.charCount.error   { color: var(--color-danger); }
 
-.charCount.error {
-    color: var(--color-danger);
-}
-
-/* Icon Selector */
+/* ── Seletor de Ícone ───────────────────────────────────────── */
 .iconSelector {
     display: grid;
     grid-template-columns: repeat(8, 1fr);
@@ -254,9 +303,9 @@
     max-height: 150px;
     overflow-y: auto;
     padding: var(--spacing-sm);
-    border: 1px solid var(--border-color);
+    border: 1.5px solid var(--border-color);
     border-radius: var(--border-radius-sm);
-    background-color: var(--bg-main);
+    background: var(--bg-main);
 }
 
 .iconOption {
@@ -265,8 +314,8 @@
     display: flex;
     align-items: center;
     justify-content: center;
-    border: 1px solid transparent;
-    border-radius: var(--border-radius-sm);
+    border: 1.5px solid transparent;
+    border-radius: var(--border-radius-xs);
     cursor: pointer;
     color: var(--text-secondary);
     transition: all var(--transition-base);
@@ -274,17 +323,17 @@
 }
 
 .iconOption:hover {
-    background-color: var(--bg-hover);
+    background: var(--bg-hover);
     color: var(--text-primary);
 }
 
 .iconOption.selected {
-    background-color: var(--color-primary-light);
-    border-color: var(--color-primary);
-    color: var(--color-primary);
+    background: rgba(0, 196, 180, 0.10);
+    border-color: var(--color-teal);
+    color: var(--color-teal-dark);
 }
 
-/* Category Selector */
+/* ── Seletor de Categoria ───────────────────────────────────── */
 .categorySelector {
     display: flex;
     gap: var(--spacing-sm);
@@ -293,28 +342,29 @@
 .categoryOption {
     flex: 1;
     padding: var(--spacing-sm) var(--spacing-md);
-    border: 1px solid var(--border-color);
+    border: 1.5px solid var(--border-color);
     border-radius: var(--border-radius-sm);
-    background-color: var(--bg-main);
+    background: var(--bg-main);
     color: var(--text-secondary);
     font-size: var(--font-size-sm);
+    font-family: var(--font-family);
     cursor: pointer;
     transition: all var(--transition-base);
     text-align: center;
 }
 
 .categoryOption:hover {
-    background-color: var(--bg-hover);
+    background: var(--bg-hover);
     color: var(--text-primary);
 }
 
 .categoryOption.selected {
-    background-color: var(--color-primary);
-    border-color: var(--color-primary);
+    background: var(--color-navy);
+    border-color: var(--color-navy);
     color: white;
 }
 
-/* Form Actions */
+/* ── Ações do Form ──────────────────────────────────────────── */
 .formActions {
     display: flex;
     gap: var(--spacing-sm);
@@ -324,22 +374,25 @@
 .submitButton {
     flex: 1;
     padding: var(--spacing-sm) var(--spacing-lg);
-    background-color: var(--color-primary);
+    background: var(--color-navy);
     color: white;
     border: none;
     border-radius: var(--border-radius-sm);
     font-size: var(--font-size-md);
+    font-family: var(--font-family);
     font-weight: 500;
     cursor: pointer;
-    transition: all var(--transition-base);
+    transition: background-color var(--transition-base), box-shadow var(--transition-base);
     display: flex;
     align-items: center;
     justify-content: center;
     gap: var(--spacing-sm);
+    box-shadow: 0 2px 8px rgba(12, 30, 53, 0.2);
 }
 
 .submitButton:hover {
-    background-color: var(--color-primary-hover);
+    background: var(--color-navy-mid);
+    box-shadow: 0 4px 14px rgba(12, 30, 53, 0.3);
 }
 
 .submitButton:disabled {
@@ -349,94 +402,42 @@
 
 .cancelButton {
     padding: var(--spacing-sm) var(--spacing-lg);
-    background-color: transparent;
+    background: transparent;
     color: var(--text-secondary);
-    border: 1px solid var(--border-color);
+    border: 1.5px solid var(--border-color);
     border-radius: var(--border-radius-sm);
     font-size: var(--font-size-md);
+    font-family: var(--font-family);
     cursor: pointer;
     transition: all var(--transition-base);
 }
 
 .cancelButton:hover {
-    background-color: var(--bg-hover);
+    background: var(--bg-hover);
     color: var(--text-primary);
 }
 
-/* Empty State */
+/* ── Estado Vazio ───────────────────────────────────────────── */
 .emptyList {
     text-align: center;
     padding: var(--spacing-xl);
     color: var(--text-secondary);
-    background-color: var(--bg-main);
+    background: var(--bg-main);
     border-radius: var(--border-radius-sm);
-    border: 1px dashed var(--border-color);
+    border: 1.5px dashed var(--border-color);
+    font-size: var(--font-size-sm);
 }
 
-@media (max-width: 768px) {
-    .settingsButton {
-        bottom: calc(var(--spacing-md) + var(--safe-area-bottom));
-        right: var(--spacing-md);
-    }
-
-    .modalOverlay {
-        padding: 0;
-        align-items: flex-end;
-    }
-
-    .modalContent {
-        max-height: 85vh;
-        border-radius: var(--border-radius-lg) var(--border-radius-lg) 0 0;
-    }
-
-    .modalHeader {
-        padding: var(--spacing-md);
-    }
-
-    .modalBody {
-        padding: var(--spacing-md);
-    }
-
-    .iconSelector {
-        grid-template-columns: repeat(6, 1fr);
-    }
-
-    .formActions {
-        flex-direction: column;
-    }
-
-    .cancelButton {
-        order: 1;
-    }
-
-    .submitButton {
-        order: 0;
-    }
-
-    .formRow {
-        flex-direction: column;
-    }
-
-    .searchContainer {
-        width: 100%;
-        margin-top: var(--spacing-sm);
-    }
-
-    .portalListHeader {
-        flex-direction: column;
-        align-items: flex-start;
-    }
-}
-
-/* Add New Portal Button */
+/* ── Adicionar novo portal ──────────────────────────────────── */
 .addNewPortalButton {
     width: 100%;
     padding: var(--spacing-md);
-    background-color: var(--bg-main);
-    border: 2px dashed var(--color-primary);
+    background: var(--bg-main);
+    border: 2px dashed rgba(0, 196, 180, 0.4);
     border-radius: var(--border-radius-sm);
-    color: var(--color-primary);
+    color: var(--color-teal-dark);
     font-size: var(--font-size-md);
+    font-family: var(--font-family);
     font-weight: 500;
     cursor: pointer;
     display: flex;
@@ -448,11 +449,12 @@
 }
 
 .addNewPortalButton:hover {
-    background-color: var(--color-primary-light);
+    background: rgba(0, 196, 180, 0.06);
     border-style: solid;
+    border-color: var(--color-teal);
 }
 
-/* Form Header with minimize */
+/* ── Form Header ────────────────────────────────────────────── */
 .formHeader {
     display: flex;
     align-items: center;
@@ -474,11 +476,11 @@
 }
 
 .minimizeButton:hover {
-    background-color: var(--bg-hover);
+    background: var(--bg-hover);
     color: var(--text-primary);
 }
 
-/* Form Row for side-by-side inputs */
+/* ── Form Row ───────────────────────────────────────────────── */
 .formRow {
     display: flex;
     gap: var(--spacing-md);
@@ -488,7 +490,7 @@
     flex: 1;
 }
 
-/* Portal List Section */
+/* ── Portal List Section ────────────────────────────────────── */
 .portalListSection {
     margin-top: var(--spacing-lg);
     border-top: 1px solid var(--border-color);
@@ -510,7 +512,7 @@
     margin: 0;
 }
 
-/* Search Container */
+/* ── Busca no Modal ─────────────────────────────────────────── */
 .searchContainer {
     position: relative;
     min-width: 200px;
@@ -528,25 +530,26 @@
 .searchInput {
     width: 100%;
     padding: var(--spacing-xs) var(--spacing-sm) var(--spacing-xs) calc(var(--spacing-sm) + 24px);
-    border: 1px solid var(--border-color);
+    border: 1.5px solid var(--border-color);
     border-radius: var(--border-radius-sm);
     font-size: var(--font-size-sm);
+    font-family: var(--font-family);
     color: var(--text-primary);
-    background-color: var(--bg-input);
-    transition: all var(--transition-base);
+    background: var(--bg-input);
+    transition: border-color var(--transition-base), box-shadow var(--transition-base);
 }
 
 .searchInput:focus {
     outline: none;
-    border-color: var(--color-primary);
-    box-shadow: 0 0 0 2px var(--color-primary-light);
+    border-color: var(--color-teal);
+    box-shadow: 0 0 0 2px rgba(0, 196, 180, 0.12);
 }
 
 .searchInput::placeholder {
     color: var(--text-tertiary);
 }
 
-/* Scrollable Portal List */
+/* ── Lista Scrollable ───────────────────────────────────────── */
 .portalListScrollable {
     max-height: 300px;
     overflow-y: auto;
@@ -556,25 +559,11 @@
     padding-right: var(--spacing-xs);
 }
 
-.portalListScrollable::-webkit-scrollbar {
-    width: 6px;
-}
+.portalListScrollable::-webkit-scrollbar { width: 6px; }
+.portalListScrollable::-webkit-scrollbar-track { background: var(--bg-main); border-radius: 3px; }
+.portalListScrollable::-webkit-scrollbar-thumb { background: var(--border-color); border-radius: 3px; }
+.portalListScrollable::-webkit-scrollbar-thumb:hover { background: var(--text-tertiary); }
 
-.portalListScrollable::-webkit-scrollbar-track {
-    background: var(--bg-main);
-    border-radius: 3px;
-}
-
-.portalListScrollable::-webkit-scrollbar-thumb {
-    background: var(--border-color);
-    border-radius: 3px;
-}
-
-.portalListScrollable::-webkit-scrollbar-thumb:hover {
-    background: var(--text-tertiary);
-}
-
-/* Empty search result */
 .emptySearchResult {
     text-align: center;
     padding: var(--spacing-lg);
@@ -582,26 +571,28 @@
     font-size: var(--font-size-sm);
 }
 
-/* Delete Confirmation Modal */
+/* ── Modal de Confirmação de Delete ─────────────────────────── */
 .confirmOverlay {
     position: absolute;
     inset: 0;
-    background-color: rgba(0, 0, 0, 0.6);
+    background: rgba(12, 30, 53, 0.55);
+    backdrop-filter: blur(2px);
     display: flex;
     align-items: center;
     justify-content: center;
     z-index: 100;
-    border-radius: var(--border-radius-lg);
+    border-radius: var(--border-radius-xl);
 }
 
 .confirmModal {
-    background-color: var(--bg-secondary);
+    background: #FFFFFF;
     border-radius: var(--border-radius-lg);
     padding: var(--spacing-xl);
     max-width: 360px;
     width: 90%;
     text-align: center;
     box-shadow: var(--shadow-xl);
+    animation: modalIn 0.25s cubic-bezier(0.34, 1.56, 0.64, 1) both;
 }
 
 .confirmIcon {
@@ -623,9 +614,7 @@
     line-height: 1.5;
 }
 
-.confirmMessage strong {
-    color: var(--text-primary);
-}
+.confirmMessage strong { color: var(--text-primary); }
 
 .confirmActions {
     display: flex;
@@ -635,47 +624,51 @@
 
 .confirmCancelButton {
     padding: var(--spacing-sm) var(--spacing-lg);
-    background-color: var(--bg-main);
+    background: var(--bg-main);
     color: var(--text-secondary);
-    border: 1px solid var(--border-color);
+    border: 1.5px solid var(--border-color);
     border-radius: var(--border-radius-sm);
     font-size: var(--font-size-md);
+    font-family: var(--font-family);
     cursor: pointer;
     transition: all var(--transition-base);
 }
 
 .confirmCancelButton:hover {
-    background-color: var(--bg-hover);
+    background: var(--bg-hover);
     color: var(--text-primary);
 }
 
 .confirmDeleteButton {
     padding: var(--spacing-sm) var(--spacing-lg);
-    background-color: var(--color-danger);
+    background: var(--color-danger);
     color: white;
     border: none;
     border-radius: var(--border-radius-sm);
     font-size: var(--font-size-md);
+    font-family: var(--font-family);
     cursor: pointer;
     display: flex;
     align-items: center;
     gap: var(--spacing-xs);
-    transition: all var(--transition-base);
+    transition: opacity var(--transition-base), box-shadow var(--transition-base);
+    box-shadow: 0 2px 8px rgba(239, 68, 68, 0.3);
 }
 
 .confirmDeleteButton:hover {
     opacity: 0.9;
+    box-shadow: 0 4px 12px rgba(239, 68, 68, 0.4);
 }
 
-/* Icon Type Tabs */
+/* ── Icon Type Tabs ─────────────────────────────────────────── */
 .iconTypeTabs {
     display: flex;
     gap: var(--spacing-xs);
     margin-bottom: var(--spacing-sm);
-    background-color: var(--bg-main);
+    background: var(--bg-main);
     padding: var(--spacing-xs);
     border-radius: var(--border-radius-sm);
-    border: 1px solid var(--border-color);
+    border: 1.5px solid var(--border-color);
 }
 
 .iconTypeTab {
@@ -686,26 +679,27 @@
     gap: var(--spacing-xs);
     padding: var(--spacing-sm);
     border: none;
-    border-radius: var(--border-radius-sm);
-    background-color: transparent;
+    border-radius: var(--border-radius-xs);
+    background: transparent;
     color: var(--text-secondary);
     font-size: var(--font-size-sm);
+    font-family: var(--font-family);
     font-weight: 500;
     cursor: pointer;
     transition: all var(--transition-base);
 }
 
 .iconTypeTab:hover {
-    background-color: var(--bg-hover);
+    background: var(--bg-hover);
     color: var(--text-primary);
 }
 
 .iconTypeTab.active {
-    background-color: var(--color-primary);
+    background: var(--color-navy);
     color: white;
 }
 
-/* Image Upload Section */
+/* ── Upload de Imagem ───────────────────────────────────────── */
 .imageUploadSection {
     margin-top: var(--spacing-sm);
 }
@@ -719,52 +713,47 @@
     padding: var(--spacing-xl);
     border: 2px dashed var(--border-color);
     border-radius: var(--border-radius-sm);
-    background-color: var(--bg-main);
+    background: var(--bg-main);
     cursor: pointer;
     transition: all var(--transition-base);
     color: var(--text-secondary);
 }
 
 .uploadArea:hover {
-    border-color: var(--color-primary);
-    background-color: var(--color-primary-light);
-    color: var(--color-primary);
+    border-color: var(--color-teal);
+    background: rgba(0, 196, 180, 0.04);
+    color: var(--color-teal-dark);
 }
 
-.uploadArea span {
-    font-size: var(--font-size-sm);
-}
+.uploadArea span { font-size: var(--font-size-sm); }
 
 .uploadHint {
     font-size: var(--font-size-xs) !important;
     color: var(--text-tertiary) !important;
 }
 
-.fileInput {
-    display: none;
-}
+.fileInput { display: none; }
 
-/* Image Preview Wrapper */
+/* ── Preview de Imagem ──────────────────────────────────────── */
 .imagePreviewWrapper {
     display: flex;
     flex-direction: column;
     align-items: center;
     gap: var(--spacing-md);
     padding: var(--spacing-lg);
-    background-color: var(--bg-main);
+    background: var(--bg-main);
     border-radius: var(--border-radius-sm);
-    border: 1px solid var(--border-color);
+    border: 1.5px solid var(--border-color);
 }
 
-/* Button Preview - Simula como ficará o botão */
 .buttonPreview {
     display: flex;
     flex-direction: column;
     align-items: center;
     justify-content: center;
     padding: var(--spacing-lg);
-    background-color: var(--bg-secondary);
-    border: 1px solid var(--border-color);
+    background: #FFFFFF;
+    border: 1.5px solid var(--border-color-light);
     border-radius: var(--border-radius-lg);
     box-shadow: var(--shadow-sm);
     min-width: 160px;
@@ -792,7 +781,6 @@
     color: var(--text-primary);
 }
 
-/* Preview Actions */
 .previewActions {
     display: flex;
     flex-direction: column;
@@ -814,22 +802,23 @@
     align-items: center;
     gap: var(--spacing-xs);
     padding: var(--spacing-xs) var(--spacing-md);
-    background-color: transparent;
-    border: 1px solid var(--border-color);
+    background: transparent;
+    border: 1.5px solid var(--border-color);
     border-radius: var(--border-radius-sm);
     color: var(--text-secondary);
     font-size: var(--font-size-sm);
+    font-family: var(--font-family);
     cursor: pointer;
     transition: all var(--transition-base);
 }
 
 .changeImageButton:hover {
-    background-color: var(--bg-hover);
+    background: var(--bg-hover);
     color: var(--text-primary);
-    border-color: var(--color-primary);
+    border-color: var(--color-teal);
 }
 
-/* Legacy - mantido para compatibilidade */
+/* Legacy */
 .imagePreviewContainer {
     position: relative;
     display: inline-block;
@@ -840,8 +829,8 @@
     height: 100px;
     border-radius: var(--border-radius-sm);
     object-fit: contain;
-    border: 2px solid var(--border-color);
-    background-color: var(--bg-main);
+    border: 1.5px solid var(--border-color);
+    background: var(--bg-main);
 }
 
 .removeImageButton {
@@ -853,38 +842,89 @@
     display: flex;
     align-items: center;
     justify-content: center;
-    background-color: var(--color-danger);
+    background: var(--color-danger);
     color: white;
     border: none;
     border-radius: 50%;
     cursor: pointer;
-    transition: all var(--transition-base);
+    transition: transform var(--transition-spring);
 }
 
-.removeImageButton:hover {
-    transform: scale(1.1);
-}
+.removeImageButton:hover { transform: scale(1.15); }
 
-/* Portal List Item Image */
 .portalListItemImage {
     width: 48px;
     height: 32px;
-    border-radius: var(--border-radius-sm);
+    border-radius: var(--border-radius-xs);
     object-fit: contain;
     flex-shrink: 0;
 }
 
-/* Spinner Animation */
+/* ── Spinner ────────────────────────────────────────────────── */
 .spinner {
-    animation: spin 1s linear infinite;
+    animation: spin 0.9s linear infinite;
 }
 
 @keyframes spin {
-    from {
-        transform: rotate(0deg);
+    from { transform: rotate(0deg); }
+    to   { transform: rotate(360deg); }
+}
+
+/* ══════════════════════════════════════════════════════════════
+   RESPONSIVIDADE MOBILE
+   ══════════════════════════════════════════════════════════════ */
+@media (max-width: 768px) {
+    .settingsButton {
+        bottom: calc(var(--spacing-md) + var(--safe-area-bottom));
+        right: var(--spacing-md);
     }
 
-    to {
-        transform: rotate(360deg);
+    .modalOverlay {
+        padding: 0;
+        align-items: flex-end;
+    }
+
+    .modalContent {
+        max-height: 88vh;
+        border-radius: var(--border-radius-xl) var(--border-radius-xl) 0 0;
+    }
+
+    .modalContent::before {
+        left: 20px;
+        right: 20px;
+    }
+
+    .modalHeader {
+        padding: var(--spacing-md);
+        border-radius: var(--border-radius-xl) var(--border-radius-xl) 0 0;
+    }
+
+    .modalBody {
+        padding: var(--spacing-md);
+    }
+
+    .iconSelector {
+        grid-template-columns: repeat(6, 1fr);
+    }
+
+    .formActions {
+        flex-direction: column;
+    }
+
+    .cancelButton { order: 1; }
+    .submitButton { order: 0; }
+
+    .formRow {
+        flex-direction: column;
+    }
+
+    .searchContainer {
+        width: 100%;
+        margin-top: var(--spacing-sm);
+    }
+
+    .portalListHeader {
+        flex-direction: column;
+        align-items: flex-start;
     }
 }
