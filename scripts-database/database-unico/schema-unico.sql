@@ -228,11 +228,38 @@ CREATE TABLE public.flop_tarefas (
 CREATE TABLE public.pepl_responsibles (
   id uuid NOT NULL DEFAULT uuid_generate_v4(),
   name text NOT NULL UNIQUE,
+  email text,
+  job_description text,
   is_active boolean DEFAULT true,
   created_at timestamp with time zone NOT NULL DEFAULT timezone('utc'::text, now()),
   updated_at timestamp with time zone NOT NULL DEFAULT timezone('utc'::text, now()),
-  email text,
   CONSTRAINT pepl_responsibles_pkey PRIMARY KEY (id)
+);
+CREATE TABLE public.pepl_roles (
+  id uuid NOT NULL DEFAULT uuid_generate_v4(),
+  name text NOT NULL UNIQUE,
+  created_at timestamp with time zone NOT NULL DEFAULT timezone('utc'::text, now()),
+  updated_at timestamp with time zone NOT NULL DEFAULT timezone('utc'::text, now()),
+  CONSTRAINT pepl_roles_pkey PRIMARY KEY (id)
+);
+CREATE TABLE public.pepl_responsible_roles (
+  id uuid NOT NULL DEFAULT uuid_generate_v4(),
+  responsible_id uuid NOT NULL,
+  role_id uuid NOT NULL,
+  created_at timestamp with time zone NOT NULL DEFAULT timezone('utc'::text, now()),
+  CONSTRAINT pepl_responsible_roles_pkey PRIMARY KEY (id),
+  CONSTRAINT pepl_responsible_roles_responsible_id_fkey FOREIGN KEY (responsible_id) REFERENCES public.pepl_responsibles(id) ON DELETE CASCADE,
+  CONSTRAINT pepl_responsible_roles_role_id_fkey FOREIGN KEY (role_id) REFERENCES public.pepl_roles(id) ON DELETE CASCADE,
+  CONSTRAINT pepl_responsible_roles_unique UNIQUE (responsible_id, role_id)
+);
+CREATE TABLE public.pepl_responsible_skills (
+  id uuid NOT NULL DEFAULT uuid_generate_v4(),
+  responsible_id uuid NOT NULL,
+  skill text NOT NULL,
+  order_index integer DEFAULT 0,
+  created_at timestamp with time zone NOT NULL DEFAULT timezone('utc'::text, now()),
+  CONSTRAINT pepl_responsible_skills_pkey PRIMARY KEY (id),
+  CONSTRAINT pepl_responsible_skills_responsible_id_fkey FOREIGN KEY (responsible_id) REFERENCES public.pepl_responsibles(id) ON DELETE CASCADE
 );
 CREATE TABLE public.prtc_portals (
   id uuid NOT NULL DEFAULT gen_random_uuid(),
