@@ -109,7 +109,7 @@ const PortalHome = () => {
                     title="Ver dados da empresa"
                 >
                     <span className={styles.topbarCompanyName}>
-                        <span className={styles.topbarDefy}>DEFY</span>
+                        <span className={styles.topbarDefy}>Defy Solutions</span>
                         <span className={styles.topbarSuffix}>WORLD TECH SOLUTIONS LTDA</span>
                     </span>
                     <Info size={13} className={styles.topbarInfoIcon} />
@@ -127,7 +127,7 @@ const PortalHome = () => {
             <main className={styles.portalContent}>
                 {/* ── Marca em destaque ── */}
                 <div className={styles.brandHero}>
-                    <img src={defyLogo} alt="Defy — Easy by IA" className={styles.brandHeroLogo} />
+                    <img src={defyLogo} alt="Defy Solutions" className={styles.brandHeroLogo} />
                 </div>
 
                 {/* ── Hero título ── */}
@@ -181,7 +181,7 @@ const PortalHome = () => {
                     <div className={styles.portalSections}>
                         {internalPortals.length > 0 && (
                             <PortalSection
-                                title="Soluções Defy"
+                                title="Soluções Defy Solutions"
                                 portals={internalPortals}
                                 allPortals={portals}
                                 onReorder={handleReorder}
